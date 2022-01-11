@@ -20,3 +20,11 @@ make_trianing_lr:
 	rm -rf data/training_lr
 	mkdir -p data/training_lr
 	python make_training_lr.py
+
+train: 
+	cd SwinIR ; python -m torch.distributed.launch \
+		--nproc_per_node=8 \
+		--master_port=1234 \
+		main_train_psnr.py \
+		--opt options/swinir/train_swinir_sr_classical.json  \
+		--dist True
