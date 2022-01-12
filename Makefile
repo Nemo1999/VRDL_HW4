@@ -3,7 +3,7 @@
 install: 
 	@echo "Installing Dependencies..."
 	pip install -r requirements.txt
-	cd KAIR_Repo ; pip install -r requiremet.txt
+	cd KAIR_Repo ; pip install -r requirement.txt
 
 download_data:
 	@echo "Downloading Data..."
@@ -25,13 +25,14 @@ make_trianing_lr:
 train: 
 	@echo "Start training model... "
 	@echo "Checkpoints and logs will be saved at KAIR_Repo/superresolution"
-	cd KARI_Repo; python main_train_psnr.py --opt options/train_msrresnet_psnr.json
+	cd KAIR_Repo; python main_train_psnr.py --opt options/train_msrresnet_psnr.json
 	
 
 reproduce: 
 	rm -rf KAIR_Repo/superresolution/models
 	mkdir -p KAIR_Repo/superresolution/models
-	@gdown https://drive.google.com/uc?id=1sVyh0qiXb16j5Ave_8r2_pbApunes09q/ -O "KAIR_Repo/superresolution/models/95000_G.pth"
-	@gdown https://drive.google.com/uc?id=1PwKxXt9sSAHRJN6A3NbewtbcOYbye8Qd/ -O "KAIR_Repo/superresolution/models/95000_E.pth"
-	cd KARI_Repo; python main_test_psnr.py --opt options/test_msrresnet_psnr.json 
-	@echo "The resulting 3x HR images are stored in KAIR_Repo/superresolution/images/evaluation{checkpoints iterations}/"
+	@gdown "https://drive.google.com/uc?export=download&id=1sVyh0qiXb16j5Ave_8r2_pbApunes09q" -O "KAIR_Repo/superresolution/models/95000_G.pth"
+	@gdown "https://drive.google.com/uc?export=download&id=1PwKxXt9sSAHRJN6A3NbewtbcOYbye8Qd" -O "KAIR_Repo/superresolution/models/95000_E.pth"
+	cd KAIR_Repo; python main_test_psnr.py --opt options/test_msrresnet_psnr.json 
+	@echo "Done!!!"
+	@echo "The resulting 3x HR images are stored in VRDL_HW4/KAIR_Repo/superresolution/images/evaluation{checkpoints iterations}/"
