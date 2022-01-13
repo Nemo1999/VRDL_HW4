@@ -49,5 +49,5 @@ The resulting images will be stored at `VRDL_HW4/KAIR_Repo/superresolution/msrre
 ```bash
 make train
 ```
-The training result will be stored at `VRDL_HW4/KAIR_Repo/superresolution/`
+The training result will be stored at `VRDL_HW4/KAIR_Repo/superresolution/msrresnet_psnr/`
 
