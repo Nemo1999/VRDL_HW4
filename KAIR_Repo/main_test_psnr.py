@@ -62,22 +62,15 @@ def main(json_path='options/train_msrresnet_psnr.json'):
     # update opt
     # ----------------------------------------
     # -->-->-->-->-->-->-->-->-->-->-->-->-->-
-    init_iter_G, init_path_G = option.find_last_checkpoint(opt['path']['models'], net_type='G')
-    init_iter_E, init_path_E = option.find_last_checkpoint(opt['path']['models'], net_type='E')
-    opt['path']['pretrained_netG'] = init_path_G
-    opt['path']['pretrained_netE'] = init_path_E
-    init_iter_optimizerG, init_path_optimizerG = option.find_last_checkpoint(opt['path']['models'], net_type='optimizerG')
-    opt['path']['pretrained_optimizerG'] = init_path_optimizerG
-    current_step = max(init_iter_G, init_iter_E, init_iter_optimizerG)
-
+   
+    opt['path']['pretrained_netG'] = "superresolution/models/95000_G.pth"
+    opt['path']['pretrained_netE'] = "superresolution/models/95000_E.pth"
     border = opt['scale']
     # --<--<--<--<--<--<--<--<--<--<--<--<--<-
 
     # ----------------------------------------
     # save opt to  a '../option.json' file
     # ----------------------------------------
-    if opt['rank'] == 0:
-        option.save(opt)
 
     # ----------------------------------------
     # return None for missing key
@@ -87,23 +80,10 @@ def main(json_path='options/train_msrresnet_psnr.json'):
     # ----------------------------------------
     # configure logger
     # ----------------------------------------
-    if opt['rank'] == 0:
-        logger_name = 'train'
-        utils_logger.logger_info(logger_name, os.path.join(opt['path']['log'], logger_name+'.log'))
-        logger = logging.getLogger(logger_name)
-        logger.info(option.dict2str(opt))
 
     # ----------------------------------------
     # seed
     # ----------------------------------------
-    seed = opt['train']['manual_seed']
-    if seed is None:
-        seed = random.randint(1, 10000)
-    print('Random seed: {}'.format(seed))
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
 
     '''
     # ----------------------------------------
@@ -117,26 +97,7 @@ def main(json_path='options/train_msrresnet_psnr.json'):
     # ----------------------------------------
     for phase, dataset_opt in opt['datasets'].items():
         if phase == 'train':
-            train_set = define_Dataset(dataset_opt)
-            train_size = int(math.ceil(len(train_set) / dataset_opt['dataloader_batch_size']))
-            if opt['rank'] == 0:
-                logger.info('Number of train images: {:,d}, iters: {:,d}'.format(len(train_set), train_size))
-            if opt['dist']:
-                train_sampler = DistributedSampler(train_set, shuffle=dataset_opt['dataloader_shuffle'], drop_last=True, seed=seed)
-                train_loader = DataLoader(train_set,
-                                          batch_size=dataset_opt['dataloader_batch_size']//opt['num_gpu'],
-                                          shuffle=False,
-                                          num_workers=dataset_opt['dataloader_num_workers']//opt['num_gpu'],
-                                          drop_last=True,
-                                          pin_memory=True,
-                                          sampler=train_sampler)
-            else:
-                train_loader = DataLoader(train_set,
-                                          batch_size=dataset_opt['dataloader_batch_size'],
-                                          shuffle=dataset_opt['dataloader_shuffle'],
-                                          num_workers=dataset_opt['dataloader_num_workers'],
-                                          drop_last=True,
-                                          pin_memory=True)
+            pass
 
         elif phase == 'test':
             test_set = define_Dataset(dataset_opt)
@@ -154,15 +115,13 @@ def main(json_path='options/train_msrresnet_psnr.json'):
 
     model = define_Model(opt)
     model.init_train()
-    if opt['rank'] == 0:
-        logger.info(model.info_network())
-        logger.info(model.info_params())
 
     '''
     # ----------------------------------------
     # Step--4 (main testing)
     # ----------------------------------------
     '''
+    current_step=95000
     for test_data in test_loader:
                     
                     image_name_ext = os.path.basename(test_data['L_path'][0])
