@@ -35,4 +35,4 @@ reproduce:
 	@gdown "https://drive.google.com/uc?export=download&id=1PwKxXt9sSAHRJN6A3NbewtbcOYbye8Qd" -O "KAIR_Repo/superresolution/models/95000_E.pth"
 	cd KAIR_Repo; python main_test_psnr.py --opt options/test_msrresnet_psnr.json 
 	@echo "Done!!!"
-	@echo "The resulting 3x HR images are stored in VRDL_HW4/KAIR_Repo/superresolution/images/evaluation{checkpoints iterations}/"
+	@echo "The resulting 3x HR images are stored in VRDL_HW4/KAIR_Repo/superresolution/msrresnet_psnr/images/evaluation{iterations}/"
